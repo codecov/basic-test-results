@@ -1,12 +1,20 @@
 name: 'Basic Test Results'
 description: 'Aggregates and processes tests files in CI. Outputs the failed tests as a comment on the PR.'
 inputs:
+  github-token:
+    description: |
+      'The secrets.GITHUB_TOKEN to be able to interact with the current PR and comment on it.'
+    required: true
+  github-ref:
+    description: |
+      'The github.ref to be able to be able to check that it's a PR. We only post on PRs.'
+    required: true
   test-file-regex:
     description: |
       'The regex for the junit file that we want to run the test-processor for.'
     default: '*junit.xml'
     required: true
-  test-dir:
+  directory:
     description: |
       'Custom directory to download all the junit files.'
     required: true
@@ -19,18 +27,26 @@ runs:
         python-version: "3.12"
 
     - name: Install Codecov CLI
-      run: pip install git+https://github.com/codecov/codecov-cli/archive/5fb183704854873f94a8ba1df4956f3350b03362.tar.gz
+      run: pip install codecov-cli==0.7.6
+      shell: bash
    
     - name: Download all test results
       uses: actions/download-artifact@v4
       with:
         pattern: ${{ inputs.test-file-regex }}
-        path: ${{ inputs.test-dir }}
+        path: ${{ inputs.directory }}
         merge-multiple: true
 
+    - name: Print ref
+      shell: bash
+      run: echo ${{ inputs.github-ref }}
+
     - name: Run Test Results Processor
-      if: ${{ !cancelled() && github.ref && contains(github.ref, 'pull') }}
+      if: ${{ !cancelled() }}
+      shell: bash
       env:
-        TEST_DIR: ${{ inputs.test-dir }}
+        TEST_DIR: ${{ inputs.directory }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GITHUB_REF: ${{ inputs.github-ref }}
       run: |
-        codecovcli process-test-results --dir ${TEST_DIR} --github-token ${{ secrets.GITHUB_TOKEN }}
+        codecovcli process-test-results --dir ${TEST_DIR} --github-token ${GITHUB_TOKEN}
