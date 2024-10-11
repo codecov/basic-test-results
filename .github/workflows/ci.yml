@@ -20,4 +20,3 @@ jobs:
         with:
           directory: demo/calculator/
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-ref: ${{ github.ref }}

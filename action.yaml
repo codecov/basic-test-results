@@ -5,10 +5,6 @@ inputs:
     description: |
       'The secrets.GITHUB_TOKEN to be able to interact with the current PR and comment on it.'
     required: true
-  github-ref:
-    description: |
-      'The github.ref to be able to be able to check that it's a PR. We only post on PRs.'
-    required: true
   test-file-regex:
     description: |
       'The regex for the junit file that we want to run the test-processor for.'
@@ -47,6 +43,5 @@ runs:
       env:
         TEST_DIR: ${{ inputs.directory }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
-        GITHUB_REF: ${{ inputs.github-ref }}
       run: |
         codecovcli process-test-results --dir ${TEST_DIR} --github-token ${GITHUB_TOKEN}
