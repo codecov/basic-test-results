@@ -12,7 +12,7 @@ inputs:
     required: true
   directory:
     description: |
-      'Custom directory to download all the junit files.'
+      'Directory to download all the junit artifacts that match the test-file-regex. If not specified, then it will be test_results.'
     required: true
     default: 'test_results'
 runs:
@@ -25,17 +25,6 @@ runs:
     - name: Install Codecov CLI
       run: pip install codecov-cli==0.7.6
       shell: bash
-   
-    - name: Download all test results
-      uses: actions/download-artifact@v4
-      with:
-        pattern: ${{ inputs.test-file-regex }}
-        path: ${{ inputs.directory }}
-        merge-multiple: true
-
-    - name: Print ref
-      shell: bash
-      run: echo ${{ inputs.github-ref }}
 
     - name: Run Test Results Processor
       if: ${{ !cancelled() }}
