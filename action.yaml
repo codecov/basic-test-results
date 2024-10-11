@@ -1,0 +1,36 @@
+name: 'Basic Test Results'
+description: 'Aggregates and processes tests files in CI. Outputs the failed tests as a comment on the PR.'
+inputs:
+  test-file-regex:
+    description: |
+      'The regex for the junit file that we want to run the test-processor for.'
+    default: '*junit.xml'
+    required: true
+  test-dir:
+    description: |
+      'Custom directory to download all the junit files.'
+    required: true
+    default: 'test_results'
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install Codecov CLI
+      run: pip install git+https://github.com/codecov/codecov-cli/archive/5fb183704854873f94a8ba1df4956f3350b03362.tar.gz
+   
+    - name: Download all test results
+      uses: actions/download-artifact@v4
+      with:
+        pattern: ${{ inputs.test-file-regex }}
+        path: ${{ inputs.test-dir }}
+        merge-multiple: true
+
+    - name: Run Test Results Processor
+      if: ${{ !cancelled() && github.ref && contains(github.ref, 'pull') }}
+      env:
+        TEST_DIR: ${{ inputs.test-dir }}
+      run: |
+        codecovcli process-test-results --dir ${TEST_DIR} --github-token ${{ secrets.GITHUB_TOKEN }}
