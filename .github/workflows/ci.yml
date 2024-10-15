@@ -25,6 +25,23 @@ jobs:
         with:
           directory: demo/calculator/
           github-token: ${{ secrets.GITHUB_TOKEN }}
+  
+  run-test-on-file:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+        OS: ${{ matrix.os }}
+        PYTHON: '3.10'
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Basic Test Results Action, Specify file with Disabled Search
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: demo/calculator/junit.xml
+          disable-search: true
 
   parse-tests:
     runs-on: ubuntu-latest
@@ -37,7 +54,8 @@ jobs:
           pattern: '*junit.xml'
           path: 'test_results'
           merge-multiple: true
-      - name: Run Basic Test Results Action, Compile All
+      - name: Run Basic Test Results Action, Compile All, verbose
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          directory: 'test_results'

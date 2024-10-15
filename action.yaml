@@ -5,16 +5,22 @@ inputs:
     description: |
       'The secrets.GITHUB_TOKEN to be able to interact with the current PR and comment on it.'
     required: true
-  test-file-regex:
-    description: |
-      'The regex for the junit file that we want to run the test-processor for.'
-    default: '*junit.xml'
-    required: true
   directory:
-    description: |
-      'Directory to download all the junit artifacts that match the test-file-regex. If not specified, then it will be test_results.'
-    required: true
-    default: 'test_results'
+    description: 'Directory to search for test result reports. Will run test processing on all files in the directory.'
+    required: false
+  disable-search:
+    description: 'Disable search for test result files. This is helpful when specifying what files you want to run test report processing with the --file option.'
+    required: false
+  exclude:
+    description: 'Directories to exclude from search.'
+    required: false
+  file:
+    description: 'Path to the junit file to run test result processing.'
+    required: false
+  version:
+    description: 'Specify which version of the Codecov CLI should be used. Defaults to `latest`.'
+    required: false
+
 runs:
   using: "composite"
   steps:
@@ -23,14 +29,37 @@ runs:
         python-version: "3.12"
 
     - name: Install Codecov CLI
-      run: pip install codecov-cli==0.7.6
+      env:
+        VERSION: ${{ inputs.version }}
+      run: |
+        if [[ -z "${VERSION}" ]]; then
+          pip install codecov-cli
+        else
+          pip install codecov-cli==${VERSION}
+        fi
       shell: bash
 
     - name: Run Test Results Processor
       if: ${{ !cancelled() }}
       shell: bash
       env:
-        TEST_DIR: ${{ inputs.directory }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
+        TEST_DIR: ${{ inputs.directory }}
+        DISABLE_SEARCH: ${{ inputs.disable-search }}
+        EXCLUDE: ${{ inputs.exclude }}
+        FILE: ${{ inputs.file }}
       run: |
-        codecovcli process-test-results --dir ${TEST_DIR} --github-token ${GITHUB_TOKEN}
+        codecov_cli_args=()
+        if [[ ! -z "${TEST_DIR}" ]]; then
+          codecov_cli_args+=("--dir" ${TEST_DIR})
+        fi
+        if [[ ! -z "${DISABLE_SEARCH}" ]]; then
+          codecov_cli_args+=("--disable-search")
+        fi
+        if [[ ! -z "${EXCLUDE}" ]]; then
+          codecov_cli_args+=("--exclude" ${EXCLUDE})
+        fi
+        if [[ ! -z "${FILE}" ]]; then
+          codecov_cli_args+=("--file" ${FILE})
+        fi
+        codecovcli process-test-results --github-token ${GITHUB_TOKEN} ${codecov_cli_args[*]}
