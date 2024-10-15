@@ -21,6 +21,7 @@ jobs:
           name: ${{matrix.os}}junit.xml
           path: demo/calculator/junit.xml
       - name: Run Basic Test Results Action, Verify OS
+        if: github.event_name == 'pull_request'
         uses: ./
         with:
           directory: demo/calculator/
@@ -37,6 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Run Basic Test Results Action, Specify file with Disabled Search
+        if: github.event_name == 'pull_request'
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -55,6 +57,7 @@ jobs:
           path: 'test_results'
           merge-multiple: true
       - name: Run Basic Test Results Action, Compile All, verbose
+        if: github.event_name == 'pull_request'
         uses: ./
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

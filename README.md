@@ -47,7 +47,7 @@ jobs:
       run: |
         pytest --cov --junitxml=junit.xml
     - name: Upload artifacts for test-results-processing
-      if: ${{ !cancelled() }}
+      if: ${{ !cancelled() && github.event_name == 'pull_request'}}
       uses: actions/upload-artifact@v4
       with:
         name: python-junit.xml
@@ -59,7 +59,7 @@ jobs:
       run: |
         JEST_JUNIT_OUTPUT_NAME="junit.xml" jest
     - name: Upload artifacts for test-results-processing
-      if: ${{ !cancelled() }}
+      if: ${{ !cancelled() && github.event_name == 'pull_request'}}
       uses: actions/upload-artifact@v4
       with:
         name: jest-junit.xml
