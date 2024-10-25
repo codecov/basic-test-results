@@ -1,7 +1,29 @@
-# basic-test-results
-GitHub Actions to collect test results from a JUnit XML test output and emit a PR comment about the test status.
+<p align="center">
+  <img src="images/Codecov umbrella only.png" alt="Codecov Logo" width=100 />
+</p>
 
-This action currently works only with JUnit format.
+
+Basic Test Results lets you easily find test run failures as a pull request comment. 
+All analysis is done locally on your CI. 
+This is a standalone test results action that does not include code coverage 
+or other metrics.
+
+# 🏛️ Codecov - The Leading Test Coverage Solution 
+
+If you’re interested in uncovering test coverage reporting, 
+test analytics (including flake detection), 
+and more code health insights for your repo, check out Codecov. 
+Free forever for open source and public repos. 
+Learn more at [https://about.codecov.io/](https://about.codecov.io/).
+
+
+# 📢 Have thoughts?
+
+Reach out to us on [Github](https://github.com/codecov/basic-test-results/issues).
+
+# 🛠️ Setup
+
+This action currently works only with the JUnit XML format. The action processes a JUnit XML test report locally and outputs results as a formatted PR comment.
 
 ## Arguments
 
@@ -21,7 +43,6 @@ This action currently works only with JUnit format.
 ```
 steps:
   - ...
-
   - name: Test with Pytest exporting JUnit file
     run: |
       pytest --cov --junitxml=junit.xml
@@ -82,9 +103,10 @@ jobs:
           directory: 'test_results'
 ```
 
-## FAQ
 
-### How should the comment show up?
+# ❓FAQ
+
+## How should the comment show up?
 
 `basic-test-results` should create (or update an existing) comment when it is triggered.
 The assumption is that there will be one comment per PR,
