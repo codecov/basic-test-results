@@ -116,7 +116,9 @@ The assumption is that there will be one comment per PR,
 and that it gets updated on every PR push update.
 If you see multiple messages, that means that there was a race condition
 when creating the first message.
-To avoid having the race condition, please ensure that your workflow
-only runs `basic-test-results` once per workflow.
+
+
+To avoid having the race condition, please ensure that you run
+`basic-test-results` only once in your CI.
 You can call `basic-test-results` for multiple JUnit files;
 please see [this section](#aggregating-multiple-test-files) on how to set this up.
