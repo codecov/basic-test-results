@@ -63,3 +63,7 @@ runs:
           codecov_cli_args+=("--file" ${FILE})
         fi
         codecovcli process-test-results --github-token ${GITHUB_TOKEN} ${codecov_cli_args[*]}
+
+branding:
+  color: 'red'
+  icon: 'umbrella'
