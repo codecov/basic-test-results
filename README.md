@@ -98,7 +98,7 @@ jobs:
           path: 'test_results'
           merge-multiple: true
       - name: Run Basic Test Results Action
-        uses: ./
+        uses: codecov/basic-test-results@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           directory: 'test_results'
