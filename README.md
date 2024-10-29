@@ -6,7 +6,8 @@
 Basic Test Results lets you easily find test run failures as a pull request comment. 
 All analysis is done locally on your CI. 
 This is a standalone test results action that does not include code coverage 
-or other metrics.
+or other metrics. 
+Using this action does not require signing up to Codecov or any other service.
 
 # 🏛️ Codecov - The Leading Test Coverage Solution 
 
@@ -97,7 +98,7 @@ jobs:
           path: 'test_results'
           merge-multiple: true
       - name: Run Basic Test Results Action
-        uses: ./
+        uses: codecov/basic-test-results@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           directory: 'test_results'
@@ -108,12 +109,16 @@ jobs:
 
 ## How should the comment show up?
 
-`basic-test-results` should create (or update an existing) comment when it is triggered.
+`basic-test-results` should create (or update an existing) comment when it is triggered. 
+![image](https://github.com/user-attachments/assets/40fd768e-a53d-48c4-9b1d-3d31b2c81643)
+
 The assumption is that there will be one comment per PR,
 and that it gets updated on every PR push update.
 If you see multiple messages, that means that there was a race condition
 when creating the first message.
-To avoid having the race condition, please ensure that your workflow
-only runs `basic-test-results` once per workflow.
+
+
+To avoid having the race condition, please ensure that you run
+`basic-test-results` only once in your CI.
 You can call `basic-test-results` for multiple JUnit files;
 please see [this section](#aggregating-multiple-test-files) on how to set this up.
