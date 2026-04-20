@@ -1,3 +1,4 @@
+<!-- trigger: enforce-license-compliance workflow -->
 <p align="center">
   <img src="images/Codecov umbrella only.png" alt="Codecov Logo" width=100 />
 </p>
